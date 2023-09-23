@@ -24,7 +24,9 @@ Don't overlook, this section is the most important. Now that your MCU is configu
   > **Important Note**:
   >
   > This branch of Klippain is for using with MMU/ERCF, it's only compatible with the [Happy Hare v2] (https://github.com/moggieuk/Happy-Hare.git) software backend.
-  > Enable the MMU/ERCF lines in Klippain's `printer.cfg` and then install Happy Hare directly by following its official documention. **When the Happy Hare installer ask if you want to include all the MMU files into your printer.cfg: answer no** as everything is already included in Klippain!
+  > by enable the MMU/ERCF lines in Klippain's `printer.cfg` and then install Happy Hare directly by following its official documention.
+  > Take in mind that HHv2 use a new extruder section (define in `/mmu/base/mmu_hardware.cfg` file): especialy take care about `[tmc2209 manual_extruder_stepper extruder]` for replacement of `[tmc2209 extruder]` so **all the [tmc2209 extruder] section in klippain must be comment out (see in `mcu.cfg`)  and report in `[tmc2209 manual_extruder_stepper extruder]` section of mmu_hardware.cfg !!!**.
+ **If the Happy Hare installer ask if you want to include all the MMU files into your printer.cfg: answer no** as everything is already included in Klippain!
 
 
 ## 3. Initial startup of the machine
@@ -35,11 +37,11 @@ Next, ensure the mechanical probe (if used) can be attached/detached, verify tha
 
 Finally, add custom print start G-code to your slicer. Here's an example for SuperSlicer:  
 ```
-START_PRINT EXTRUDER_TEMP={first_layer_temperature[initial_extruder] + extruder_temperature_offset[initial_extruder]} BED_TEMP=[first_layer_bed_temperature] MATERIAL=[filament_type] CHAMBER=[chamber_temperature] SIZE={first_layer_print_min[0]}_{first_layer_print_min[1]}_{first_layer_print_max[0]}_{first_layer_print_max[1]} INITIAL_TOOL={initial_extruder}
+START_PRINT EXTRUDER_TEMP={first_layer_temperature[initial_extruder] + extruder_temperature_offset[initial_extruder]} BED_TEMP=[first_layer_bed_temperature] MATERIAL=[filament_type] CHAMBER=[chamber_temperature] SIZE={first_layer_print_min[0]}_{first_layer_print_min[1]}_{first_layer_print_max[0]}_{first_layer_print_max[1]} INITIAL_TOOL={initial_extruder} TOOLS_USED=!referenced_tools!
 ```
 Another example for OrcaSlicer:
 ```
-START_PRINT EXTRUDER_TEMP=[nozzle_temperature_initial_layer] BED_TEMP=[bed_temperature_initial_layer_single] MATERIAL=[filament_type] CHAMBER=[chamber_temperature] SIZE={first_layer_print_min[0]}_{first_layer_print_min[1]}_{first_layer_print_max[0]}_{first_layer_print_max[1]} INITIAL_TOOL=[initial_tool]
+START_PRINT EXTRUDER_TEMP=[nozzle_temperature_initial_layer] BED_TEMP=[bed_temperature_initial_layer_single] MATERIAL=[filament_type] CHAMBER=[chamber_temperature] SIZE={first_layer_print_min[0]}_{first_layer_print_min[1]}_{first_layer_print_max[0]}_{first_layer_print_max[1]} INITIAL_TOOL=[initial_tool] TOOLS_USED=!referenced_tools!
 ```
 
 Also, add custom print end G-code to your slicer:
