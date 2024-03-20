@@ -6,6 +6,7 @@
 # @version: 1.3
 
 # CHANGELOG:
+#   v1.4: added Shake&Tune install call
 #   v1.3: - added a warning on first install to be sure the user wants to install klippain and fixed a bug
 #           where some artefacts of the old user config where still present after the install (harmless bug but not clean)
 #         - automated the install of the Gcode shell commands plugin
@@ -93,6 +94,11 @@ function check_download {
 
 # Step 3: Backup the old Klipper configuration
 function backup_config {
+    if [ ! -e "${USER_CONFIG_PATH}" ]; then
+        printf "[BACKUP] No previous config found, skipping backup...\n\n"
+        return 0
+    fi
+
     mkdir -p ${BACKUP_DIR}
 
     # Copy every files from the user config ("2>/dev/null || :" allow it to fail silentely in case the config dir doesn't exist)
@@ -103,7 +109,7 @@ function backup_config {
     # If Klippain is not already installed (we check for .VERSION in the backup to detect it),
     # we need to remove, wipe and clean the current user config folder...
     if [ ! -f "${BACKUP_DIR}/.VERSION" ]; then
-        rm -R ${USER_CONFIG_PATH}
+        rm -fR ${USER_CONFIG_PATH}
     fi
 
     printf "[BACKUP] Backup of current user config files done in: ${BACKUP_DIR}\n\n"
@@ -132,9 +138,6 @@ function install_config {
     # CHMOD the scripts to be sure they are all executables (Git should keep the modes on files but it's to be sure)
     chmod +x ${FRIX_CONFIG_PATH}/install.sh
     chmod +x ${FRIX_CONFIG_PATH}/uninstall.sh
-    for file in is_workflow.py graph_vibrations.py graph_shaper.py graph_belts.py; do
-        chmod +x ${FRIX_CONFIG_PATH}/scripts/is_workflow/$file
-    done
 
     # Symlink the gcode_shell_command.py file in the correct Klipper folder (erased to always get the last version)
     ln -fsn ${FRIX_CONFIG_PATH}/scripts/gcode_shell_command.py ${KLIPPER_PATH}/klippy/extras
@@ -233,7 +236,7 @@ function install_mcu_templates {
             filename=$(basename "${file_list[$((mmu_template-1))]}")
             cat "${FRIX_CONFIG_PATH}/user_templates/mcu_defaults/mmu/$filename" >> ${USER_CONFIG_PATH}/mcu.cfg
             echo "[CONFIG] Template '$filename' inserted into your mcu.cfg user file"
-            printf "[CONFIG] You must install Happy Hare from https://github.com/moggieuk/Happy-Hare.git to use MMU/ERCF with Klippain\n\n"
+            printf "[CONFIG] Note: keep in mind that you have to install the HappyHare backend manually to use an MMU/ERCF with Klippain. See the Klippain documentation for more information!\n\n"
         else
             printf "[CONFIG] No MMU/ERCF template selected. Skip and continuing...\n\n"
         fi
@@ -260,6 +263,8 @@ check_download
 backup_config
 install_config
 restart_klipper
+
+wget -O - https://raw.githubusercontent.com/Frix-x/klippain-shaketune/main/install.sh | bash
 
 echo "[POST-INSTALL] Everything is ok, Klippain installed and up to date!"
 echo "[POST-INSTALL] Be sure to check the breaking changes on the release page: https://github.com/Frix-x/klippain/releases"
