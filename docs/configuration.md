@@ -20,7 +20,7 @@ Don't overlook, this section is the most important. Now that your MCU is configu
   1. Then, edit `overrides.cfg` according to the [overrides documentation and examples](./overrides.md). Use overrides to tweak machine dimensions, invert motor directions, change axis limits, currents, sensors type, or anything you feel the need to change.
   1. Once Klipper boots successfully, adjust the `variables.cfg` file to match your machine's configuration. This file provides additional customization for macro behavior (coordinates, enabling/disabling software features, etc.).
 
-  > **Note**:
+  > **Important Note**:
   >
   > If you want to use an MMU/ERCF with Klippain, you need to install the [HappyHare](https://github.com/moggieuk/Happy-Hare) backend. Also, have a look at the Klippain [MMU documentation](./docs/mmu.md) for more specific details about its configuration.
 
