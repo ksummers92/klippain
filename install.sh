@@ -26,8 +26,8 @@ FRIX_CONFIG_PATH="${HOME}/klippain_config"
 BACKUP_PATH="${HOME}/klippain_config_backups"
 # Where the Klipper folder is located (ie. the internal Klipper firmware machinery)
 KLIPPER_PATH="${HOME}/klipper"
-# Branch from Frix-x/klippain repo to use during install (default: main)
-FRIX_BRANCH="main"
+# Branch on Frix-x repo to use (default: main)
+FRIX_BRANCH="Happy_Hare-Main"
 
 
 set -eu
@@ -78,8 +78,9 @@ function check_download {
     frixbranchname="${FRIX_BRANCH}"
 
     if [ ! -d "${FRIX_CONFIG_PATH}" ]; then
-        echo "[DOWNLOAD] Downloading Klippain repository..."
-        if git -C $frixtemppath clone -b $frixbranchname https://github.com/Frix-x/klippain.git $frixreponame; then
+        echo "[DOWNLOAD] Downloading Klippain repository (Happy Hare branch beta)..."
+        if git -C $frixtemppath clone -b $frixbranchname https://github.com/ksummers92/klippain.git $frixreponame; then
+            chmod +x ${FRIX_CONFIG_PATH}/install.sh
             printf "[DOWNLOAD] Download complete!\n\n"
         else
             echo "[ERROR] Download of Klippain git repository failed!"
